@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
-import { ReactJsxRuntime } from "next/dist/server/route-modules/app-page/vendored/rsc/entrypoints";
 
 // Define a connection state tracker;
-
 type ConnectionObject = {
   isConnected?: number;
 };
@@ -19,6 +17,7 @@ async function dbConnect(): Promise<void> {
     const db = await mongoose.connect(process.env.MONGODB_URI || "");
     connection.isConnected = db.connections[0].readyState; // db.connections[0].readySate return a numeric state like 0 =disconnect , 1 = connected, 2= connecting , 3 = disconnecting;
 
+    console.log(db.connection);
     console.log("Db successfully connected");
     process.exit(1);
   } catch (error) {
