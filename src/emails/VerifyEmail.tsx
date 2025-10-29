@@ -1,3 +1,4 @@
+import { verifyEmailProps } from "@/types/VerifyEmailProps";
 import {
   Body,
   Button,
@@ -9,12 +10,7 @@ import {
   Preview,
   Text,
 } from "@react-email/components";
-import * as React from "react";
 
-interface verifyEmailProps {
-  username: string;
-  otp: string;
-}
 
 export default function VerifyEmail({ username, otp }: verifyEmailProps) {
   return (

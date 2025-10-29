@@ -25,7 +25,7 @@ export interface User extends Document {
   username: string;
   email: string;
   password: string;
-  verifyCode: string;
+  otp: string;
   verifyCodeExpiry: Date;
   isVerified: boolean;
   isAcceptingMessage: boolean;
