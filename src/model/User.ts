@@ -50,7 +50,7 @@ const UserSchema: Schema<User> = new Schema({
     ],
   },
   password: { type: String, required: [true, "Password is required"] },
-  verifyCode: { type: String, required: [true, "verify code is required"] },
+  otp: { type: String, required: [true, "OTP is required"] },
   verifyCodeExpiry: {
     type: Date,
     required: [true, "verify code Expiry is required"],
