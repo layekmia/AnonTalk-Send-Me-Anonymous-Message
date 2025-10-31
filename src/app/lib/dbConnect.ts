@@ -9,7 +9,6 @@ const connection: ConnectionObject = {};
 
 async function dbConnect(): Promise<void> {
   if (connection.isConnected) {
-    console.log("Already connected to database");
     return;
   }
 
@@ -17,12 +16,11 @@ async function dbConnect(): Promise<void> {
     const db = await mongoose.connect(process.env.MONGODB_URI || "");
     connection.isConnected = db.connections[0].readyState; // db.connections[0].readySate return a numeric state like 0 =disconnect , 1 = connected, 2= connecting , 3 = disconnecting;
 
-    console.log(db.connection);
     console.log("Db successfully connected");
-    process.exit(1);
+    // process.exit(1);
   } catch (error) {
-    console.log(`Database connection failed`);
-    process.exit(1);
+    console.log(`Database connection failed ${error}`)
+    // process.exit(1);
   }
 }
 

@@ -51,4 +51,37 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+
+  callbacks: {
+    async jwt({ token, user }) {
+      // now we don't need to query the database again and again;
+      if (user) {
+        token._id = user._id?.toString();
+        token.isVerified = user.isVerified;
+        token.isAcceptingMessages = user.isAcceptingMessages;
+        token.username = user.username;
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user._id = token._id;
+        session.user.isVerified = token.isVerified;
+        session.user.isAcceptingMessages = token.isAcceptingMessages;
+        session.user.username = token.username;
+      }
+
+      return session;
+    },
+  },
+
+  session: {
+    strategy: "jwt",
+  },
+  pages: {
+    signIn: "/auth/sign-in",
+  },
+  // this line of code is option nextjs updated version don't need to import nextAuth secret .
+  secret: process.env.NEXTAUTH_SECRET,
 };

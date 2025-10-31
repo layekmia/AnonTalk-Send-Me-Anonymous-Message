@@ -12,7 +12,7 @@ import {
 } from "@react-email/components";
 
 
-export default function VerifyEmail({ username, otp }: verifyEmailProps) {
+export default function VerifyEmail({ username, code }: verifyEmailProps) {
   return (
     <Html>
       <Head />
@@ -35,7 +35,7 @@ export default function VerifyEmail({ username, otp }: verifyEmailProps) {
           </Text>
 
           <div className="bg-gray-100 rounded-lg text-center font-bold text-2xl tracking-widest py-4 mb-5 text-gray-800">
-            {otp}
+            {code}
           </div>
 
           <Text className="text-gray-600 text-sm text-center">

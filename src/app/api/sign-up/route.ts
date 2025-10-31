@@ -25,10 +25,10 @@ export async function POST(request: Request) {
 
     const existingUserByEmail = await UserModel.findOne({ email });
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
 
     if (existingUserByEmail) {
-      // if user exist but not verified, update otp and expiry
+      // if user exist but not verified, update code and expiry
       if (existingUserByEmail.isVerified) {
         return Response.json(
           {
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       } else {
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        existingUserByEmail.otp = otp;
+        existingUserByEmail.code = code;
         existingUserByEmail.verifyCodeExpiry = new Date(
           Date.now() + 60 * 60 * 1000
         ); // 1 hour from now
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
         const emailResponse = await sendVerificationEmail(
           existingUserByEmail.email,
           existingUserByEmail.username,
-          existingUserByEmail.otp
+          existingUserByEmail.code
         );
 
         if (!emailResponse.success) {
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
         username,
         email,
         password: hashedPassword,
-        otp,
+        code,
         verifyCodeExpiry: expiryDate,
         isVerified: false,
         isAcceptingMessage: true,
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
       const emailResponse = await sendVerificationEmail(
         newUser.email,
         newUser.username,
-        newUser.otp
+        newUser.code
       );
 
       if (!emailResponse.success) {
