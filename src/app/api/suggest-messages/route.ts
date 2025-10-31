@@ -1,5 +1,5 @@
-import { openai } from "@ai-sdk/openai";
-import { streamText, UIMessage, convertToModelMessages } from "ai";
+import { openai } from '@ai-sdk/openai';
+import { streamText, UIMessage, convertToModelMessages } from 'ai';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -11,29 +11,29 @@ export async function POST(req: Request) {
 
     if (!messages || !Array.isArray(messages)) {
       return new Response(
-        JSON.stringify({ success: false, message: "Invalid messages array" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        JSON.stringify({ success: false, message: 'Invalid messages array' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     // Stream text from OpenAI
     const result = streamText({
-      model: openai("gpt-4o"),
+      model: openai('gpt-4o'),
       messages: convertToModelMessages(messages),
     });
 
     return result.toUIMessageStreamResponse();
   } catch (error: any) {
-    console.error("Error in OpenAI streaming API:", error);
+    console.error('Error in OpenAI streaming API:', error);
 
     return new Response(
       JSON.stringify({
         success: false,
-        message: error?.message || "Something went wrong",
+        message: error?.message || 'Something went wrong',
       }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       }
     );
   }
