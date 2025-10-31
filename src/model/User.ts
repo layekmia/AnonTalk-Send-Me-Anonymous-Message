@@ -4,7 +4,7 @@ import mongoose, { Schema, Document } from "mongoose";
 // Message interface defines the shape of the MongoDB document before creating the schema.
 export interface Message extends Document {
   content: string;
-  createAt: Date;
+  createdAt: Date;
 }
 
 // Create a typed Mongoose schema for the Message collection (blueprint for documents)
@@ -14,7 +14,7 @@ const MessageSchema: Schema<Message> = new Schema({
     type: String,
     required: true,
   },
-  createAt: {
+  createdAt: {
     type: Date,
     required: true,
     default: Date.now,
