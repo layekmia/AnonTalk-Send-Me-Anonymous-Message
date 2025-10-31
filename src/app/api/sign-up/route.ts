@@ -89,7 +89,7 @@ export async function POST(request: Request) {
         code,
         verifyCodeExpiry: expiryDate,
         isVerified: false,
-        isAcceptingMessage: true,
+        isAcceptingMessages: true,
         messages: [],
       });
       const emailResponse = await sendVerificationEmail(
