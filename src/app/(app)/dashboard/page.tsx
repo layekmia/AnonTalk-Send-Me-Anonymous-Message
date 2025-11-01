@@ -1,7 +1,10 @@
+import MessageCard from "@/components/MessageCard";
 
 export default function Page() {
 
   return (
-    <div>page</div>
+    <div className="">
+      <MessageCard/>
+    </div>
   )
 }

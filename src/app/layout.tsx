@@ -16,11 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <Navigation />
-        <AuthSessionProvider>{children}</AuthSessionProvider>
-        <Toaster/>
-      </body>
+      <AuthSessionProvider>
+        <body>
+          <Navigation />
+          {children}
+          <Toaster />
+        </body>
+      </AuthSessionProvider>
     </html>
   );
 }

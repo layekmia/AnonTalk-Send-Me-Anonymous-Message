@@ -1,18 +1,36 @@
 "use client";
+import Link from "next/link";
 
-import { signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
+import { Button } from "./ui/button";
 
 export default function Navigation() {
+  const { data: session, status } = useSession();
+
+  if (status === "loading") return <p>Loading...</p>;
+
   return (
-    <header className="w-full bg-black">
-      <nav className="flex items-center max-w-7xl mx-auto justify-between h-20 border-b-2 border-gray-400 px-4">
-        <button
-          onClick={() => signOut()}
-          className="text-white bg-red-600 px-4 py-2 rounded hover:bg-red-700 transition"
-        >
-          Sign out
-        </button>
-      </nav>
-    </header>
+    <nav className="p-4 md:p-6 shadow-md">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
+        <Link className="text-xl font-bold mb-4 md:mb-0" href="/">
+          AnonTalk
+        </Link>
+        {session ? (
+          <>
+            <span className="mr-4">Welcome, {session.user.username}</span>{" "}
+            <Button
+              className="w-full md:w-auto cursor-pointer"
+              onClick={() => signOut()}
+            >
+              Logout
+            </Button>
+          </>
+        ) : (
+          <Link href="/sign-in">
+            <Button className="w-full md:w-auto cursor-pointer">Login</Button>
+          </Link>
+        )}
+      </div>
+    </nav>
   );
 }

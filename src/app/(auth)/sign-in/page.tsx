@@ -41,8 +41,6 @@ export default function Page() {
         password: data.password,
       });
 
-      console.log(result);
-
       // Handle NextAuth errors (result.error is string if login fails)
       if (result?.error) {
         toast.error(result.error);
