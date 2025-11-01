@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
     return Response.json({
       success: true,
-      message: "Message acceptance status",
+      message: "Message acceptance status updated",
       updatedUser,
     });
   } catch (error) {

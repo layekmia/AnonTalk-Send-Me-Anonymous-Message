@@ -8,7 +8,6 @@ export default function DashboardLayout({
 }) {
   return (
     <div>
-      {/* Main content */}
       <main className="min-h-screen">{children}</main>
     </div>
   );

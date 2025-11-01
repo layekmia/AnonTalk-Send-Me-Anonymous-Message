@@ -22,21 +22,21 @@ export async function GET(request: Request) {
 
   try {
     // here we used mongodb aggregation pipeline;
-    const user = await UserModel.aggregate([
+    const messages = await UserModel.aggregate([
       { $match: { _id: userId } },
       { $unwind: "$messages" },
       { $sort: { "messages.createdAt": -1 } },
       { $group: { _id: "$_id", messages: { $push: "$messages" } } },
     ]);
 
-    if (!user || user.length === 0) {
+    if (!messages || messages.length === 0) {
       return Response.json(
-        { success: false, message: "user not found" },
-        { status: 401 }
+        { success: true, message: "messages not found" },
+        { status: 201 }
       );
     }
     return Response.json(
-      { success: true, messages: user[0].messages },
+      { success: true, messages: messages[0].messages },
       { status: 200 }
     );
   } catch (error) {
