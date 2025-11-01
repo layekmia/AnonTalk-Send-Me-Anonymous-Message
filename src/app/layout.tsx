@@ -19,13 +19,7 @@ export default function RootLayout({
       <body>
         <Navigation />
         <AuthSessionProvider>{children}</AuthSessionProvider>
-        <Toaster
-          richColors // enables custom colors
-          toastOptions={{
-            error: { className: "bg-red-600 text-white" },
-            warning: { className: "bg-yellow-500 text-black" },
-          }}
-        />
+        <Toaster/>
       </body>
     </html>
   );
