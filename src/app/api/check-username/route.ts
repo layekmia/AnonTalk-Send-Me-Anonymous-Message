@@ -1,4 +1,4 @@
-import dbConnect from "@/app/lib/dbConnect";
+import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import { z } from "zod";
 import { usernameValidation } from "@/schemas/signUpSchema";
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const queryParam = {
-      username: searchParams.get("username"),
+      username: decodeURIComponent(searchParams.get("username") || ""),
     };
 
     // validate with zod ;
@@ -41,10 +41,13 @@ export async function GET(request: Request) {
     });
 
     if (existingVerifiedUsername) {
-      return Response.json({
-        success: false,
-        message: "username is already taken",
-      }, {status: 500});
+      return Response.json(
+        {
+          success: false,
+          message: "username is already taken",
+        },
+        { status: 500 }
+      );
     }
 
     return Response.json({ success: true, message: "username is available" });

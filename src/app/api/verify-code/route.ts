@@ -1,4 +1,4 @@
-import dbConnect from "@/app/lib/dbConnect";
+import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 
 export async function POST(request: Request) {
@@ -6,9 +6,8 @@ export async function POST(request: Request) {
 
   try {
     const { username, code } = await request.json();
-    const decodedUsername = decodeURIComponent(username);
 
-    const user = await UserModel.findOne({ username: decodedUsername });
+    const user = await UserModel.findOne({ username });
 
     if (!user) {
       return Response.json(
@@ -39,7 +38,7 @@ export async function POST(request: Request) {
       );
     } else if (!isCodeValid) {
       return Response.json(
-        { success: false, message: "Invalid verification code code" },
+        { success: false, message: "Invalid verification code " },
         { status: 500 }
       );
     }
