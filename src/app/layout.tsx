@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AuthSessionProvider from "@/context/SessionProvider";
-import { Toaster } from "@/components/ui/sonner"
-
+import { Toaster } from "@/components/ui/sonner";
+import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,8 +17,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <Navigation />
         <AuthSessionProvider>{children}</AuthSessionProvider>
-        <Toaster/>
+        <Toaster
+          richColors // enables custom colors
+          toastOptions={{
+            error: { className: "bg-red-600 text-white" },
+            warning: { className: "bg-yellow-500 text-black" },
+          }}
+        />
       </body>
     </html>
   );

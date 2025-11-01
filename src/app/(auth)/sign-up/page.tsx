@@ -20,7 +20,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import SubmitButton from "@/components/SubmitButton";
 
@@ -44,29 +43,34 @@ export default function Page() {
     },
   });
 
-  useEffect(() => {
-    async function checkUsernameUnique() {
-      if (username) {
-        setIsCheckingUsername(false);
-        setUsernameMessage("");
-
-        try {
-          const response = await axios.get(
-            `/api/check-username?username=${username}`
-          );
-          setUsernameMessage(response.data.message);
-        } catch (error) {
-          const axiosError = error as AxiosError<ApiResponse>;
-          setUsernameMessage(
-            axiosError?.response?.data.message ?? "Error checking username"
-          );
-        } finally {
-          setIsCheckingUsername(false);
-        }
-      }
+ useEffect(() => {
+  async function checkUsernameUnique() {
+    // if username is empty, reset message and don't call API
+    if (!username) {
+      setUsernameMessage("");
+      setIsCheckingUsername(false);
+      return;
     }
-    checkUsernameUnique();
-  }, [username]);
+
+    setIsCheckingUsername(true);
+    setUsernameMessage("");
+
+    try {
+      const response = await axios.get(`/api/check-username?username=${username}`);
+      setUsernameMessage(response.data.message);
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>;
+      setUsernameMessage(
+        axiosError?.response?.data.message ?? "Error checking username"
+      );
+    } finally {
+      setIsCheckingUsername(false);
+    }
+  }
+
+  checkUsernameUnique();
+}, [username]);
+
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true);
@@ -159,7 +163,7 @@ export default function Page() {
           <p>
             Already a member ?{" "}
             <Link
-              href="/auth/sign-in"
+              href="/sign-in"
               className="text-blue-600 hover:text-blue-800"
             >
               Sign in

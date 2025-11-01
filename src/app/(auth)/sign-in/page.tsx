@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { signInSchema } from "@/schemas/signInSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -39,6 +40,8 @@ export default function Page() {
         identifier: data.identifier.trim(),
         password: data.password,
       });
+
+      console.log(result);
 
       // Handle NextAuth errors (result.error is string if login fails)
       if (result?.error) {
@@ -73,7 +76,7 @@ export default function Page() {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Email/Username</FormLabel>
                   <FormControl>
                     <Input placeholder="email or username" {...field} />
                   </FormControl>
@@ -97,6 +100,14 @@ export default function Page() {
             </SubmitButton>
           </form>
         </Form>
+        <div className="text-center mt-4">
+          <p>
+            don&appos;t have an account ?{" "}
+            <Link href="/sign-up" className="text-blue-600 hover:text-blue-800">
+              Signup
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
