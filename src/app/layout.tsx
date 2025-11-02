@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import AuthSessionProvider from "@/context/SessionProvider";
 import { Toaster } from "@/components/ui/sonner";
-import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,11 +13,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en">
       <AuthSessionProvider>
         <body>
-          <Navigation />
           {children}
           <Toaster />
         </body>

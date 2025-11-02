@@ -1,5 +1,4 @@
 import Navigation from "@/components/Navigation";
-import Link from "next/link";
 
 export default function DashboardLayout({
   children,
@@ -8,6 +7,7 @@ export default function DashboardLayout({
 }) {
   return (
     <div>
+      <Navigation />
       <main className="min-h-screen">{children}</main>
     </div>
   );

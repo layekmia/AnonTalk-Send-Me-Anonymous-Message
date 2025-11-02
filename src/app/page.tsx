@@ -9,12 +9,14 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import Navigation from "@/components/Navigation";
 
 import messages from "@/data/messages.json";
 
 export default function page() {
   return (
     <div>
+      <Navigation />
       <main className="flex grow flex-col items-center justify-center px-4 md:px-24 py-12">
         <section className="text-center mb-8 md:mb-12">
           <h1 className="text-3xl md:text-5xl font-bold ">
@@ -25,22 +27,26 @@ export default function page() {
           </p>
         </section>
 
-        <Carousel
+        <Carousel 
           plugins={[Autoplay({ delay: 2000 })]}
-          className="w-full max-w-xs"
+          className="w-full max-w-lg"
         >
           <CarouselContent>
             {messages.map((message, index) => (
               <CarouselItem key={index}>
                 <div className="p-1">
-                  <Card>
-                    <CardHeader>{message.title}</CardHeader>
-                    <CardContent className="flex  items-center justify-center p-6">
-                      <span className="text-4xl font-semibold">
-                        {message.content}
-                      </span>
-                    </CardContent>
-                  </Card>
+                  <div className="p-4 flex justify-center">
+                    <Card className="w-[500px] h-[250px] bg-white/80 backdrop-blur-md rounded-2xl shadow-lg hover:scale-105 transform transition-all duration-300">
+                      <CardHeader className="text-xl font-semibold text-indigo-600">
+                        {message.title}
+                      </CardHeader>
+                      <CardContent className="flex items-center justify-center p-4">
+                        <span className="text-3xl font-bold text-gray-900">
+                          {message.content}
+                        </span>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
               </CarouselItem>
             ))}

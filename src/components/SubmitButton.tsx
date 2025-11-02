@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -7,18 +7,22 @@ interface ButtonProps {
   isSubmitting: boolean;
   label: string;
   children: string;
+  className?: string;
+  isDisable?: boolean;
 }
 
 export default function SubmitButton({
   isSubmitting,
   label,
   children,
+  className,
+  isDisable,
 }: ButtonProps) {
   return (
     <Button
-      className="cursor-pointer mt-4"
+      className={`cursor-pointer ${className}`}
       type="submit"
-      disabled={isSubmitting}
+      disabled={isSubmitting || isDisable}
     >
       {isSubmitting ? (
         <>
