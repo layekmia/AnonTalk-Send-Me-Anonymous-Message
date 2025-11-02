@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import MessageCard from "@/components/MessageCard";
 import { Button } from "@/components/ui/button";
@@ -21,17 +21,19 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
 
-  const profileUrl = "https://truefeedback.in/u/layekmiah";
-
   // optimistic ui;
 
-  const hadnleDeleteMessage = (messageId: string) => {
+  const handleMessageDelete = (messageId: string) => {
     setMessages((messages) =>
       messages.filter((message) => message._id !== messageId)
     );
   };
 
   const { data: session, status } = useSession();
+
+  const username = session?.user.username;
+
+  const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/u/${username}`;
 
   const form = useForm<z.infer<typeof acceptMessageSchema>>({
     resolver: zodResolver(acceptMessageSchema),
@@ -97,7 +99,15 @@ export default function Page() {
     }
   };
 
-  const copyToClipboard = () => {};
+  const copyToClipboard = () => {
+    try {
+      navigator.clipboard.writeText(profileUrl);
+      toast.success("Profile link copied to clipboard!");
+    } catch (error) {
+      console.error("Failed to copy:", error);
+      toast.error("Failed to copy link.");
+    }
+  };
 
   if (!session || !session.user) {
     return <div>Please login</div>;
@@ -116,14 +126,16 @@ export default function Page() {
             disabled
             className="input input-bordered w-full p-2 mr-2"
           />
-          <Button onClick={copyToClipboard}>Copy</Button>
+          <Button className="cursor-pointer" onClick={copyToClipboard}>
+            Copy
+          </Button>
         </div>
       </div>
 
       <div className="mb-4">
         <Switch
           {...register("acceptingMessages")}
-          checked={acceptMessages}
+          checked={acceptMessages as boolean}
           onCheckedChange={handleSwitchToggle}
           disabled={isSwitchLoading}
         />
@@ -149,6 +161,20 @@ export default function Page() {
           />
         )}
       </Button>
+
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {messages.length > 0 ? (
+          messages.map((message) => (
+            <MessageCard
+              message={message}
+              onMessageDelete={handleMessageDelete}
+              key={message._id as string}
+            />
+          ))
+        ) : (
+          <p>No Message to display</p>
+        )}
+      </div>
     </div>
   );
 }
