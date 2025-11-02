@@ -33,10 +33,7 @@ export default function Page() {
 
   const username = session?.user.username;
 
-  // const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/u/${username}`;
-
-  const currentOrigin = window.location.origin;
-  const profileUrl = `${currentOrigin}/u/${username}`;
+  const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/u/${username}`;
 
   const form = useForm<z.infer<typeof acceptMessageSchema>>({
     resolver: zodResolver(acceptMessageSchema),
