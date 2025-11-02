@@ -1,20 +1,23 @@
+import { NextRequest } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/option";
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { messageId: string } }
+  request: NextRequest,
+  context: { params: Promise<{ messageId: string }> }
 ) {
-  const { messageId } = await params;
+  const { params } = context;
+  const { messageId } = await params; // unwrap the promise
+
   await dbConnect();
 
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
-    return Response.json(
-      { success: false, message: "User not authenticated" },
+    return new Response(
+      JSON.stringify({ success: false, message: "User not authenticated" }),
       { status: 401 }
     );
   }
@@ -26,21 +29,27 @@ export async function DELETE(
     );
 
     if (updatedData.modifiedCount === 0) {
-      return Response.json({
-        success: false,
-        message: "message not found or already deleted",
-      });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: "Message not found or already deleted",
+        }),
+        { status: 404 }
+      );
     }
 
-    return Response.json({
-      success: true,
-      message: "message successfully deleted",
-    });
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: "Message successfully deleted",
+      }),
+      { status: 200 }
+    );
   } catch (error) {
     console.error(error);
-    return Response.json({
-      success: false,
-      message: "Internal server error",
-    });
+    return new Response(
+      JSON.stringify({ success: false, message: "Internal server error" }),
+      { status: 500 }
+    );
   }
 }
