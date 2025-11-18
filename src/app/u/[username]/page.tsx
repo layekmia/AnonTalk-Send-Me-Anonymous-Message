@@ -20,7 +20,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import axios, { AxiosError } from "axios";
-import { ApiResponse } from "@/types/ApiResponse";
+import { ApiResponse } from "@/types/type";
 import { toast } from "sonner";
 
 const messages = [
@@ -56,7 +56,7 @@ export default function Page() {
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast.error(axiosError.response?.data.message);
-    }finally{
+    } finally {
       setIsSubmitting(false)
     }
   };
@@ -65,9 +65,11 @@ export default function Page() {
     !form.watch("content") || form.watch("content").trim().length === 0;
 
   return (
-    <div className="p-14 flex items-center justify-center min-h-screen flex-col">
-      <div className="w-full max-w-4xl bg-white  text-center">
-        <h1 className="text-4xl font-bold mb-4">Public Profile Link</h1>
+    <div className="p-14 flex items-center justify-center min-h-screen flex-col bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50">
+
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl text-center p-10">
+        <h1 className="text-4xl font-bold mb-6 text-purple-700">Public Profile Link</h1>
+
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -78,17 +80,17 @@ export default function Page() {
               name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-medium font-base mt-5">
-                    Send Anonymous Message to @{username}
+                  <FormLabel className="font-medium text-gray-700 mb-2">
+                    Send Anonymous Message to <span className="text-purple-600 font-semibold">@{username}</span>
                   </FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="write your anonymous message here"
+                      placeholder="Write your anonymous message here..."
                       {...field}
-                      className="w-full h-[100px] placeholder:text-[17px] resize-none"
+                      className="w-full h-[120px] placeholder:text-[16px] resize-none border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-purple-400 p-4 shadow-sm"
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-red-500 mt-1" />
                 </FormItem>
               )}
             />
@@ -97,6 +99,7 @@ export default function Page() {
               label="sending..."
               isSubmitting={isSubmitting}
               isDisable={isDisabled}
+              className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-lg hover:scale-105 transform transition-all"
             >
               Send It
             </SubmitButton>
@@ -104,31 +107,36 @@ export default function Page() {
         </Form>
       </div>
 
-      <div className="w-full max-w-4xl bg-white mt-5 text-center">
-        <p className="text-base text-left mb-4 font-medium">
+      <div className="w-full max-w-4xl mt-8 bg-white rounded-2xl shadow-xl p-6">
+        <p className="text-base text-left mb-4 font-medium text-gray-700">
           Click on any message below to select it.
         </p>
-        <Card className="w-full gap-2">
+        <Card className="w-full gap-2 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-md border-none">
           <CardHeader>
-            <CardTitle className="text-xl text-left font-semibold">
+            <CardTitle className="text-xl text-left font-semibold text-purple-700">
               Messages
             </CardTitle>
           </CardHeader>
 
-          <CardContent className="flex flex-col gap-5">
-            {messages.map((msg, i) => (
-              <Button
-                key={i}
-                variant="outline"
-                className="text-center font-medium cursor-pointer"
-                onClick={() => handleSelect(msg)}
-              >
-                {msg}
-              </Button>
-            ))}
+          <CardContent className="flex flex-col gap-4">
+            {messages.length > 0 ? (
+              messages.map((msg, i) => (
+                <Button
+                  key={i}
+                  variant="outline"
+                  className="text-center font-medium cursor-pointer border-purple-300 text-purple-600 hover:bg-purple-100 hover:text-purple-800 rounded-lg shadow-sm transition-all"
+                  onClick={() => handleSelect(msg)}
+                >
+                  {msg}
+                </Button>
+              ))
+            ) : (
+              <p className="text-gray-500 text-center py-6">No messages yet!</p>
+            )}
           </CardContent>
         </Card>
       </div>
     </div>
+
   );
 }

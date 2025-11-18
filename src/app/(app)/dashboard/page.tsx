@@ -1,15 +1,16 @@
 "use client";
 
+import GlobalLoader from "@/components/GlobalLoader";
 import MessageCard from "@/components/MessageCard";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Message } from "@/model/User";
 import { acceptMessageSchema } from "@/schemas/acceptSchema";
-import { ApiResponse } from "@/types/ApiResponse";
+import { ApiResponse } from "@/types/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
-import { Loader2, RefreshCcw } from "lucide-react";
+import { Check, Copy, Loader2, RefreshCcw, RefreshCw, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -110,78 +111,86 @@ export default function Page() {
   };
 
   if (!session || !session.user) {
-    return <div>Please login</div>;
+    return <GlobalLoader/>
   }
 
   return (
-    <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-8 bg-gray-50 rounded-xl shadow-lg w-full max-w-6xl">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-6 text-center md:text-left">
-        User Dashboard
-      </h1>
+    <div className="min-h-screen bg-gradient-to-tr from-purple-200 via-pink-200 to-yellow-200 p-6">
+      {/* Header */}
+      <div className="text-center mb-10">
+        <h1 className="text-5xl md:text-6xl font-extrabold text-pink-600 drop-shadow-lg">
+          Welcome Back, {session?.user?.username ?? "Anon"}!
+        </h1>
+        <p className="text-lg md:text-xl text-purple-800 mt-3">
+          Your personal anonymous message hub 🌟
+        </p>
+      </div>
 
-      {/* Unique Link */}
-      <div className="mb-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-700 mb-3">
-          Copy Your Unique Link
-        </h2>
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            value={profileUrl}
-            disabled
-            className="flex-1 px-4 py-3 rounded-lg border border-gray-300 bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        {/* Unique Link Card */}
+        <div className="bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300 rounded-3xl p-6 shadow-2xl transform hover:scale-105 transition-all">
+          <h2 className="text-xl font-bold text-white mb-3">Your Unique Link</h2>
+          <div className="flex gap-2 items-center">
+            <input
+              type="text"
+              value={profileUrl}
+              disabled
+              className="flex-1 rounded-xl px-4 py-3 border-2 border-white/50 bg-white/20 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/70 backdrop-blur-sm"
+            />
+            <Button
+              onClick={copyToClipboard}
+              className="bg-white text-pink-600 font-bold px-4 py-2 rounded-xl hover:bg-white/80 transition-all shadow-lg"
+            >
+              <Copy className="h-5 w-5" />
+              Copy
+            </Button>
+          </div>
+        </div>
+
+        {/* Accept Messages Card */}
+        <div className="bg-gradient-to-tr from-green-300 via-lime-300 to-yellow-300 rounded-3xl p-6 shadow-2xl transform hover:scale-105 transition-all flex flex-col justify-center items-center gap-3">
+          <span className="text-xl font-semibold text-white">Accept Messages</span>
+          <Switch
+            {...register("acceptingMessages")}
+            checked={acceptMessages as boolean}
+            onCheckedChange={handleSwitchToggle}
+            disabled={isSwitchLoading}
+            className="bg-white cursor-pointer rounded-full shadow-lg"
           />
+          <span className="text-gray-700">
+            {acceptMessages ? <Check className="h-5 w-5 text-green-400" /> : <X className="h-5 w-5 text-red-400" />}
+            {acceptMessages ? "On" : "Off"}
+          </span>
+        </div>
+
+        <div className="bg-gradient-to-br from-orange-300 via-red-300 to-pink-400 rounded-3xl p-6 shadow-2xl transform hover:scale-105 transition-all flex flex-col justify-center items-center gap-3">
           <Button
-            className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-colors"
-            onClick={copyToClipboard}
+            // variant="outline"
+            className="flex items-center gap-2 px-6 py-3 rounded-xl border-white/70 text-white font-bold bg-white/30 hover:bg-white/30 transition-all shadow-lg shadow-black/30"
+            onClick={(e) => {
+              e.preventDefault();
+              fetchMessages(true);
+            }}
           >
-            Copy
+            {isLoading ? (
+              <Loader2 className="h-5 w-5 animate-spin text-white" />
+            ) : (
+              <RefreshCw className="h-5 w-5 text-white" />
+            )}
+            Refresh
           </Button>
+
+
         </div>
       </div>
 
-      {/* Accept Messages */}
-      <div className="mb-6 flex items-center gap-3 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-        <Switch
-          {...register("acceptingMessages")}
-          checked={acceptMessages as boolean}
-          onCheckedChange={handleSwitchToggle}
-          disabled={isSwitchLoading}
-        />
-        <span className="text-gray-700 font-medium">
-          Accept Messages:{" "}
-          <span className="font-bold">{acceptMessages ? "On" : "Off"}</span>
-        </span>
-      </div>
-
-      <Separator className="my-6" />
-
-      {/* Refresh Button */}
-      <div className="flex justify-end mb-6">
-        <Button
-          variant="outline"
-          className="flex items-center gap-2 px-4 py-2 rounded-lg border-gray-300 hover:bg-gray-100 transition-all"
-          onClick={(e) => {
-            e.preventDefault();
-            fetchMessages(true);
-          }}
-        >
-          {isLoading ? (
-            <Loader2 className="h-5 w-5 animate-spin text-gray-600" />
-          ) : (
-            <RefreshCcw className="h-5 w-5 text-gray-600" />
-          )}
-          <span className="text-gray-700 font-medium">Refresh Messages</span>
-        </Button>
-      </div>
-
       {/* Messages Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10 max-w-7xl mx-auto">
         {messages.length > 0 ? (
           messages.map((message) => (
             <div
               key={message._id as string}
-              className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition-shadow border border-gray-200"
+              className="bg-white/30 backdrop-blur-lg rounded-3xl p-5 shadow-2xl transform hover:scale-105 hover:shadow-3xl transition-all border border-white/40"
             >
               <MessageCard
                 message={message}
@@ -190,11 +199,13 @@ export default function Page() {
             </div>
           ))
         ) : (
-          <p className="text-gray-500 col-span-full text-center py-10">
-            No messages to display
+          <p className="text-white col-span-full text-center py-10 font-semibold">
+            No messages yet! 📨
           </p>
         )}
       </div>
     </div>
+
+
   );
 }

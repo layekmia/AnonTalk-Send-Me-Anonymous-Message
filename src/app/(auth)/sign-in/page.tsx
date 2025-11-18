@@ -59,54 +59,108 @@ export default function Page() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+    <div className="flex justify-center items-center min-h-screen 
+  bg-gradient-to-br from-[#1a0128] via-[#240046] to-[#0a0014] p-4">
+
+      <div className="
+      w-full max-w-md p-8 space-y-8 
+      bg-white/10 backdrop-blur-xl 
+      border border-white/20 
+      rounded-2xl shadow-2xl 
+      shadow-purple-900/40
+    ">
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-            verify Your Account
+          <h1
+            className="
+          text-3xl md:text-4xl font-extrabold
+          bg-gradient-to-r from-purple-300 via-pink-300 to-indigo-300 
+          bg-clip-text text-transparent
+          drop-shadow-[0_3px_10px_rgba(255,255,255,0.1)]
+          mb-4
+        "
+          >
+            Sign in to your account
           </h1>
-          <p className="mb-4">Enter the verification code sent to your email</p>
+
+          <p className="text-purple-200/80 text-sm md:text-base">
+            Enter valid credentials to continue
+          </p>
         </div>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+
             <FormField
               name="identifier"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email/Username</FormLabel>
+                  <FormLabel className="text-purple-200">Email / Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="email or username" {...field} />
+                    <Input
+                      placeholder="email or username"
+                      {...field}
+                      className="
+                    bg-white/10 border-white/20 text-white 
+                    placeholder-white/50
+                    focus:ring-2 focus:ring-purple-400
+                  "
+                    />
                   </FormControl>
                 </FormItem>
               )}
             />
+
             <FormField
               name="password"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>password</FormLabel>
+                  <FormLabel className="text-purple-200">Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="your password"
+                      {...field}
+                      className="
+                    bg-white/10 border-white/20 text-white 
+                    placeholder-white/50
+                    focus:ring-2 focus:ring-purple-400
+                  "
+                    />
                   </FormControl>
                 </FormItem>
               )}
             />
-            <SubmitButton label="singing..." isSubmitting={isSubmitting}>
+            <SubmitButton
+              label="Signing in..."
+              isSubmitting={isSubmitting}
+              className="
+            w-full py-3 text-lg font-semibold rounded-xl
+            bg-gradient-to-r from-purple-500 to-pink-500
+            hover:from-purple-600 hover:to-pink-600
+            shadow-lg shadow-purple-800/40
+            transition-all
+          "
+            >
               Sign In
             </SubmitButton>
           </form>
         </Form>
+
         <div className="text-center mt-4">
-          <p>
-            don&appos;t have an account ?{" "}
-            <Link href="/sign-up" className="text-blue-600 hover:text-blue-800">
-              Signup
+          <p className="text-purple-200/80 text-sm">
+            Don&apos;t have an account?
+            <Link
+              href="/sign-up"
+              className="text-pink-300 hover:text-pink-400 font-semibold ml-1"
+            >
+              Sign up
             </Link>
           </p>
         </div>
       </div>
     </div>
+
   );
 }

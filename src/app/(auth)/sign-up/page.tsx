@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { signUpSchema } from "@/schemas/signUpSchema";
 import axios, { AxiosError } from "axios";
-import { ApiResponse } from "@/types/ApiResponse";
+import { ApiResponse } from "@/types/type";
 import {
   Form,
   FormControl,
@@ -43,33 +43,33 @@ export default function Page() {
     },
   });
 
- useEffect(() => {
-  async function checkUsernameUnique() {
-    // if username is empty, reset message and don't call API
-    if (!username) {
+  useEffect(() => {
+    async function checkUsernameUnique() {
+      // if username is empty, reset message and don't call API
+      if (!username) {
+        setUsernameMessage("");
+        setIsCheckingUsername(false);
+        return;
+      }
+
+      setIsCheckingUsername(true);
       setUsernameMessage("");
-      setIsCheckingUsername(false);
-      return;
+
+      try {
+        const response = await axios.get(`/api/check-username?username=${username}`);
+        setUsernameMessage(response.data.message);
+      } catch (error) {
+        const axiosError = error as AxiosError<ApiResponse>;
+        setUsernameMessage(
+          axiosError?.response?.data.message ?? "Error checking username"
+        );
+      } finally {
+        setIsCheckingUsername(false);
+      }
     }
 
-    setIsCheckingUsername(true);
-    setUsernameMessage("");
-
-    try {
-      const response = await axios.get(`/api/check-username?username=${username}`);
-      setUsernameMessage(response.data.message);
-    } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
-      setUsernameMessage(
-        axiosError?.response?.data.message ?? "Error checking username"
-      );
-    } finally {
-      setIsCheckingUsername(false);
-    }
-  }
-
-  checkUsernameUnique();
-}, [username]);
+    checkUsernameUnique();
+  }, [username]);
 
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
@@ -89,37 +89,47 @@ export default function Page() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100">
+      <div className="w-full max-w-md p-10 space-y-8 bg-white rounded-2xl shadow-xl border border-gray-200">
+
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
+          <h1 className="text-3xl font-extrabold tracking-tight lg:text-5xl mb-3 text-purple-700">
             Join AnonTalk Message
           </h1>
-          <p className="mb-4">Sign up to start your anonymous adventure</p>
+          <p className="text-gray-600 text-lg">
+            Sign up to start your anonymous adventure
+          </p>
         </div>
 
+        {/* Form */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+            {/* Username */}
             <FormField
               name="username"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel className="text-gray-700 font-semibold">Username</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="username"
+                      placeholder="Enter your username"
                       {...field}
+                      className="border-purple-300 focus:ring-purple-400 focus:border-purple-400"
                       onChange={(e) => {
                         field.onChange(e);
                         debounced(e.target.value);
                       }}
                     />
                   </FormControl>
-                  {isCheckingUsername && <Loader2 className="animate-spin" />}
+                  {isCheckingUsername && <Loader2 className="animate-spin text-purple-500 mt-1" />}
                   {usernameMessage && (
                     <span
-                      className={`text-sm ${usernameMessage !== "username is available" ? "text-red-500" : "text-green-600"}`}
+                      className={`text-sm mt-1 block ${usernameMessage !== "username is available"
+                        ? "text-red-500"
+                        : "text-green-600"
+                        }`}
                     >
                       {usernameMessage}
                     </span>
@@ -128,49 +138,68 @@ export default function Page() {
                 </FormItem>
               )}
             />
+
+            {/* Email */}
             <FormField
               name="email"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-gray-700 font-semibold">Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Email" {...field} />
+                    <Input
+                      placeholder="Enter your email"
+                      {...field}
+                      className="border-purple-300 focus:ring-purple-400 focus:border-purple-400"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {/* Password */}
             <FormField
               name="password"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="text-gray-700 font-semibold">Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Create a password"
+                      {...field}
+                      className="border-purple-300 focus:ring-purple-400 focus:border-purple-400"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <SubmitButton isSubmitting={isSubmitting} label="please wait">
+
+            {/* Submit Button */}
+            <SubmitButton
+              isSubmitting={isSubmitting}
+              label="Please wait..."
+              className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl shadow-md hover:scale-105 transform transition-all"
+            >
               Signup
             </SubmitButton>
           </form>
         </Form>
+
+        {/* Footer */}
         <div className="text-center mt-4">
-          <p>
-            Already a member ?{" "}
-            <Link
-              href="/sign-in"
-              className="text-blue-600 hover:text-blue-800"
-            >
+          <p className="text-gray-600">
+            Already a member?{" "}
+            <Link href="/sign-in" className="text-purple-600 font-semibold hover:text-purple-800">
               Sign in
             </Link>
           </p>
         </div>
       </div>
     </div>
+
   );
 }
